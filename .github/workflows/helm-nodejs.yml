@@ -1,0 +1,47 @@
+name: Deploy to EKS with Helm
+env:
+  aws_accountid: "539935451710"
+  location: us-east-1
+  EKS_CLUSTER_NAME: squad-2
+on:
+  push:
+    branches:
+      - main  # Trigger this workflow on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    # Set up AWS credentials using OIDC authentication
+    - name: Set up AWS OIDC credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        role-to-assume: arn:aws:iam::${{ env.aws_accountid }}:role/github-group1-hu2
+        region: ${{ env.location }}
+
+    # Set up kubectl to access the EKS cluster
+    - name: Set up kubectl
+      run: |
+        aws eks --region ${{ env.location }} update-kubeconfig --name ${{ env.EKS_CLUSTER_NAME }}
+
+    # Install Helm
+    - name: Install Helm
+      uses: azure/setup-helm@v3
+      with:
+        helm-version: v3.9.0  # Adjust to the Helm version you need
+
+    # Install Helm chart dependencies (if any)
+    - name: Install Helm chart dependencies
+      run: |
+        helm repo add stable https://charts.helm.sh/stable
+        helm repo update
+
+    # Deploy the Helm chart to EKS
+    - name: Deploy Helm Chart
+      run: |
+        helm upgrade --install nodejs-app ./my-nodejs-app --namespace default
