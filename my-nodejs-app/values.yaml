@@ -1,0 +1,33 @@
+# values.yaml
+
+# Service 1 configuration
+service1:
+  image:
+    repository: your-dockerhub-username/nodejs-service1  # Replace with your Docker repo
+    pullPolicy: Always
+    tag: latest
+  replicaCount: 1
+  port: 3000  # Service 1 will run on this port
+  service:
+    type: ClusterIP
+    port: 3000
+
+# Service 2 configuration
+service2:
+  image:
+    repository: your-dockerhub-username/nodejs-service2  # Replace with your Docker repo
+    pullPolicy: Always
+    tag: latest
+  replicaCount: 1
+  port: 3001  # Service 2 will run on this port
+  service:
+    type: ClusterIP
+    port: 3001
+
+ingress:
+  enabled: false  # Set to true if you want to use ingress
+  # Define ingress for each service
+  service1:
+    host: service1.yourdomain.com
+  service2:
+    host: service2.yourdomain.com

@@ -1,0 +1,12 @@
+# templates/service-service1.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nodejs-service1
+spec:
+  selector:
+    app: nodejs-service1
+  ports:
+    - protocol: TCP
+      port: {{ .Values.service1.service.port }}
+      targetPort: {{ .Values.service1.port }}

@@ -1,0 +1,21 @@
+# templates/deployment-service1.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nodejs-service1
+spec:
+  replicas: {{ .Values.service1.replicaCount }}
+  selector:
+    matchLabels:
+      app: nodejs-service1
+  template:
+    metadata:
+      labels:
+        app: nodejs-service1
+    spec:
+      containers:
+        - name: nodejs-service1
+          image: "{{ .Values.service1.image.repository }}:{{ .Values.service1.image.tag }}"
+          imagePullPolicy: {{ .Values.service1.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service1.port }}
